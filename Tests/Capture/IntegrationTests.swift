@@ -8,6 +8,30 @@ final class IntegrationTests: XCTestCase {
         XCTAssertNotNil(Capture.Logger.sessionID)
     }
 
+    func testCaptureWithActivityBasedSession() {
+        Capture.Logger.start(withAPIKey: "foo", sessionStrategy: .activityBased())
+        XCTAssertNotNil(Capture.Logger.sessionID)
+        XCTAssertNotNil(Capture.Logger.sessionURL)
+        XCTAssertNotNil(Capture.Logger.deviceID)
+    }
+
+    func testConvenienceLoggingMethods() {
+        Capture.Logger.start(withAPIKey: "foo", sessionStrategy: .fixed())
+        // Verify these compile and don't crash — the internal logger is a no-op.
+        Capture.Logger.logTrace("trace message")
+        Capture.Logger.logDebug("debug message")
+        Capture.Logger.logInfo("info message", fields: ["key": "value"])
+        Capture.Logger.logWarning("warning message")
+        Capture.Logger.logError("error message")
+    }
+
+    func testEnableIntegrations() {
+        Capture.Logger.start(withAPIKey: "foo", sessionStrategy: .fixed())
+
+        // enableIntegrations should not crash when called after start.
+        Capture.Logger.enableIntegrations([.cocoaLumberjack(), .swiftyBeaver()])
+    }
+
     // MARK: - CocoaLumberjack Integration
 
     func testAddingCaptureDDLogger() {
