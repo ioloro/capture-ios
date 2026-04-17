@@ -1,16 +1,10 @@
-import Capture
-#if SWIFT_PACKAGE
-    import CocoaLumberjackSwift
-#else
-    import CocoaLumberjack
-#endif
-import os
+import Foundation
 
 extension Integration {
-    /// A Capture SDK integration that forwards all logs emitted using the `CocoaLumberjack`
-    /// logging framework to Capture SDK.
+    /// A Capture SDK integration that forwards all logs emitted using the CocoaLumberjack-compatible
+    /// logging system to Capture SDK.
     ///
-    /// - returns: The `CocoaLumberjack` Capture Logger SDK integration.
+    /// - returns: The CocoaLumberjack Capture Logger SDK integration.
     public static func cocoaLumberjack() -> Integration {
         return Integration { logger, _, _ in
             DDLog.add(CaptureDDLogger(logger: logger))
@@ -18,10 +12,12 @@ extension Integration {
     }
 }
 
-/// The wrapper around Capture SDK logger that conforms to `DDLogger` protocol from `CocoaLumberjack`
-/// library and can be used as a drop-in solution for forwarding `CocoaLumberjack` logs to bitdrift
-/// Capture SDK.
-final class CaptureDDLogger: NSObject, DDLogger {
+/// The wrapper around Capture SDK logger that conforms to `DDLogger` protocol and can be used as a
+/// drop-in solution for forwarding CocoaLumberjack-style logs to bitdrift Capture SDK.
+// Safety invariant: all access to CaptureDDLogger instances is serialized through DDLog's
+// concurrent queue (barrier writes, sync reads). The mutable `logFormatter` property is
+// therefore never subject to data races.
+final class CaptureDDLogger: NSObject, DDLogger, @unchecked Sendable {
     private let logger: Logging
 
     var logFormatter: DDLogFormatter?
@@ -52,9 +48,9 @@ final class CaptureDDLogger: NSObject, DDLogger {
 }
 
 extension LogLevel {
-    /// Initializes a new instance of Capture log level using provided Cocoa Lumberjack log level.
+    /// Initializes a new instance of Capture log level using provided CocoaLumberjack log level.
     ///
-    /// - parameter logLevel: Cocoa Lumberjack log level.
+    /// - parameter logLevel: CocoaLumberjack log level.
     public init?(_ logLevel: DDLogLevel) {
         switch logLevel {
         case .off:
@@ -69,8 +65,6 @@ extension LogLevel {
             self = .debug
         case .verbose, .all:
             self = .trace
-        default:
-            self = .debug
         }
     }
 }

@@ -1,14 +1,14 @@
 import Capture
 import XCTest
 
-public struct Log {
+public struct Log: Sendable {
     public let level: LogLevel
     public let message: String
     public let fields: Fields?
-    public let error: Error?
+    public let error: (any Error)?
 }
 
-public final class MockLogging: Logging {
+public final class MockLogging: Logging, @unchecked Sendable {
     public var logExpectation: XCTestExpectation?
     public private(set) var logs = [Log]()
 

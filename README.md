@@ -17,19 +17,6 @@ Logger.start(
 )
 ```
 
-### CocoaPods
-
-```Ruby
-target 'MyApp' do
-  pod 'BitdriftCapture'
-
-  # Optional integration with CocoaLumberjack logging library
-  pod 'CaptureCocoaLumberjack'
-  # Optional integration with SwiftyBeaver logging library
-  pod 'CaptureSwiftyBeaver'
-end
-```
-
 ### Swift Package Manager
 
 ```swift
@@ -43,5 +30,3 @@ Open `Package.swift` file using Xcode to start developing.
 Run `make test` to run project tests.
 
 Run `make format` to run various formatting tools and linter checks.
-
-Run `make verify` to verify CocoaPods specs.

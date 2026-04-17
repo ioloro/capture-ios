@@ -16,7 +16,3 @@ format: swiftformat swiftlint drstring
 .Phony: test
 test:
 	./tools/run_tests.sh
-
-.Phony: verify
-verify:
-	./tools/ci/verify_cocoapods.sh

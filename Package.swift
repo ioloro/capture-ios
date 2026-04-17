@@ -5,64 +5,12 @@ let package = Package(
     name: "Capture",
     platforms: [.iOS(.v15)],
     products: [
-        .library(
-            name: "Capture",
-            targets: ["Capture"]
-        ),
-        .library(
-            name: "CaptureCocoaLumberjack",
-            targets: ["CaptureCocoaLumberjack"]
-        ),
-        .library(
-            name: "CaptureSwiftyBeaver",
-            targets: ["CaptureSwiftyBeaver"]
-        ),
+        .library(name: "Capture", targets: ["Capture"]),
     ],
-    dependencies: [
-        .package(
-            url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git",
-            .upToNextMajor(from: "3.8.0")
-        ),
-        .package(url: "https://github.com/SwiftyBeaver/SwiftyBeaver.git", .upToNextMajor(from: "2.1.0")),
-    ],
+    dependencies: [],
     targets: [
-        .binaryTarget(
-            name: "Capture",
-            url: "https://dl.bitdrift.io/sdk/ios/capture-0.22.15/Capture.zip",
-            checksum: "801b76d6056b78beca275cfbf12d6e8131ae425220c4dd3d9132cfdc40a10726"
-        ),
-        .target(
-            name: "CaptureCocoaLumberjack",
-            dependencies: [
-                "Capture",
-                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
-            ]
-        ),
-        .target(
-            name: "CaptureSwiftyBeaver",
-            dependencies: [
-                "Capture",
-                .product(name: "SwiftyBeaver", package: "SwiftyBeaver"),
-            ]
-        ),
-        .target(
-            name: "CaptureMocks",
-            dependencies: ["Capture"]
-        ),
-        .testTarget(
-            name: "CaptureTests",
-            dependencies: ["Capture"],
-            path: "Tests/Capture"
-        ),
-        .testTarget(
-            name: "CaptureSwiftyBeaverTests",
-            dependencies: ["CaptureSwiftyBeaver", "CaptureMocks"],
-            path: "Tests/CaptureSwiftyBeaver"
-        ),
-        .testTarget(
-            name: "CaptureCocoaLumberjackTests",
-            dependencies: ["CaptureCocoaLumberjack", "CaptureMocks"],
-            path: "Tests/CaptureCocoaLumberjack"
-        ),
+        .target(name: "Capture"),
+        .target(name: "CaptureMocks", dependencies: ["Capture"]),
+        .testTarget(name: "CaptureTests", dependencies: ["Capture", "CaptureMocks"], path: "Tests/Capture"),
     ]
 )

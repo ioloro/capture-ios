@@ -1,11 +1,8 @@
-import Capture
-import SwiftyBeaver
-
 extension Integration {
-    /// A Capture SDK integration that forwards all logs emitted using the `SwiftyBeaver`
-    /// logging framework to Capture SDK.
+    /// A Capture SDK integration that forwards all logs emitted using the SwiftyBeaver-compatible
+    /// logging system to Capture SDK.
     ///
-    /// - returns: The `SwiftyBeaver` Capture Logger SDK integration.
+    /// - returns: The SwiftyBeaver Capture Logger SDK integration.
     public static func swiftyBeaver() -> Integration {
         return Integration { logger, _, _ in
             SwiftyBeaver.addDestination(
@@ -15,10 +12,9 @@ extension Integration {
     }
 }
 
-/// The wrapper around Capture SDK logger that conforms to `BaseDestination` protocol from `SwiftyBeaver`
-/// library and can be used as a drop-in solution for forwarding `SwiftyBeaver` logs to bitdrift
-/// Capture SDK.
-final class CaptureSwiftyBeaverLogger: BaseDestination {
+/// The wrapper around Capture SDK logger that subclasses `BaseDestination` and can be used as a
+/// drop-in solution for forwarding SwiftyBeaver-style logs to bitdrift Capture SDK.
+final class CaptureSwiftyBeaverLogger: BaseDestination, @unchecked Sendable {
     private let logger: Logging
 
     init(logger: Logging) {
@@ -36,12 +32,9 @@ final class CaptureSwiftyBeaverLogger: BaseDestination {
         context: Any? = nil
     ) -> String? {
         let fields = context.flatMap { context in
-            // swiftlint:disable line_length
-            // Following formatting logic from
-            // https://github.com/SwiftyBeaver/SwiftyBeaver/blob/d60a21a3878c487db07ec1e2df697fa24839918b/Sources/BaseDestination.swift#L239-L240
             return [
                 "context": String(describing: context).trimmingCharacters(in: .whitespacesAndNewlines),
-                "source": "SwiftBeaver",
+                "source": "SwiftyBeaver",
                 "thread": thread,
             ]
         }
@@ -68,10 +61,10 @@ final class CaptureSwiftyBeaverLogger: BaseDestination {
     }
 }
 
-extension Capture.LogLevel {
-    /// Initializes a new instance of Capture log level using provided `SwiftyBeaver` log level.
+extension LogLevel {
+    /// Initializes a new instance of Capture log level using provided SwiftyBeaver log level.
     ///
-    /// - parameter logLevel: `SwiftyBeaver` log level.
+    /// - parameter logLevel: SwiftyBeaver log level.
     init(_ logLevel: SwiftyBeaver.Level) {
         switch logLevel {
         case .verbose:
